@@ -2,23 +2,43 @@
 
 import { useWallet } from "../../components/WalletProvider";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function WalletInfo() {
-  const { account, isConnected, connectWallet } = useWallet();
+  const { account, isConnected, connectWallet, network, isClient } = useWallet();
   const router = useRouter();
+  const [eventLogs, setEventLogs] = useState([]);
   
   useEffect(() => {
     if (!isConnected) {
       console.log("Chưa kết nối ví");
+      addEventLog('Trạng thái ví', 'Chưa kết nối');
+    } else {
+      addEventLog('Trạng thái ví', 'Đã kết nối thành công');
     }
   }, [isConnected]);
+
+  useEffect(() => {
+    if (network) {
+      addEventLog('Mạng', `Đang sử dụng mạng ${network}`);
+    }
+  }, [network]);
+
+  const addEventLog = (type, message) => {
+    const timestamp = new Date().toLocaleTimeString();
+    setEventLogs(prevLogs => [
+      { type, message, timestamp },
+      ...prevLogs.slice(0, 9) 
+    ]);
+  };
 
   const handleConnect = async () => {
     try {
       await connectWallet();
+      addEventLog('Kết nối', 'Đã kết nối ví thành công');
     } catch (error) {
       console.error('Lỗi kết nối:', error);
+      addEventLog('Lỗi', `Không thể kết nối: ${error.message || 'Lỗi không xác định'}`);
     }
   };
 
@@ -43,7 +63,7 @@ export default function WalletInfo() {
             </button>
           </div>
 
-          {isConnected && account ? (
+          {isClient && isConnected && account ? (
             <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200 shadow-lg">
               <h2 className="text-2xl font-bold mb-8 text-indigo-800 flex items-center">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -93,9 +113,65 @@ export default function WalletInfo() {
                     </span>
                   </div>
                 </div>
+
+                <div className="flex flex-col gap-3">
+                  <span className="font-semibold text-indigo-700 text-lg flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                    </svg>
+                    Mạng hiện tại:
+                  </span>
+                  <div className="bg-white px-5 py-4 rounded-lg border border-blue-200 text-gray-800 shadow-sm">
+                    {isClient ? (
+                      <span className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium ${network === 'Mainnet' ? 'bg-purple-100 text-purple-800' : network === 'Testnet' ? 'bg-blue-100 text-blue-800' : 'bg-orange-100 text-orange-800'}`}>
+                        <svg className="mr-1.5 h-2 w-2 text-indigo-600" fill="currentColor" viewBox="0 0 8 8">
+                          <circle cx="4" cy="4" r="3" />
+                        </svg>
+                        {network || 'Đang tải...'}
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800">
+                        <svg className="mr-1.5 h-2 w-2 text-gray-600" fill="currentColor" viewBox="0 0 8 8">
+                          <circle cx="4" cy="4" r="3" />
+                        </svg>
+                        Đang tải...
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-3 mt-8">
+                  <span className="font-semibold text-indigo-700 text-lg flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                    </svg>
+                    Nhật ký sự kiện:
+                  </span>
+                  <div className="bg-white px-5 py-4 rounded-lg border border-blue-200 text-gray-800 shadow-sm max-h-60 overflow-y-auto">
+                    {isClient ? (
+                      eventLogs.length > 0 ? (
+                        <ul className="divide-y divide-gray-200">
+                          {eventLogs.map((log, index) => (
+                            <li key={index} className="py-3 flex items-start">
+                              <span className="text-xs text-gray-500 w-20 flex-shrink-0">{log.timestamp}</span>
+                              <span className="px-2 py-1 rounded-md text-xs font-medium bg-indigo-100 text-indigo-800 w-24 flex-shrink-0 text-center mr-3">
+                                {log.type}
+                              </span>
+                              <span className="text-sm text-gray-700 flex-grow">{log.message}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p className="text-gray-500 text-sm italic">Chưa có sự kiện nào được ghi nhận.</p>
+                      )
+                    ) : (
+                      <p className="text-gray-500 text-sm">Đang tải nhật ký sự kiện...</p>
+                    )}
+                  </div>
+                </div>
               </div>
             </div>
-          ) : (
+          ) : isClient ? (
             <div className="text-center py-12">
               <div className="mb-6">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-indigo-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -113,6 +189,10 @@ export default function WalletInfo() {
                 </svg>
                 Kết nối Petra Wallet
               </button>
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-gray-500 text-sm">Đang tải...</p>
             </div>
           )}
         </div>

@@ -10,7 +10,7 @@ export default function useClipboard() {
       setIsVisible(true);
       timeout = setTimeout(() => {
         setIsVisible(false);
-        setTimeout(() => setCopyMessage(''), 300); // Đợi animation kết thúc rồi xóa message
+        setTimeout(() => setCopyMessage(''), 300);
       }, 2000);
     }
     return () => clearTimeout(timeout);

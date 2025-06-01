@@ -1,6 +1,7 @@
 'use client';
 
 import { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react';
+import { AptosClient } from 'aptos';
 
 const WalletContext = createContext(null);
 
@@ -61,13 +62,55 @@ export function WalletProvider({ children }) {
       const wallet = getAptosWallet();
       if (wallet) {
         await wallet.disconnect();
-        console.log('Ngắt kết nối thành công');
+        setIsConnected(false);
+        setAccount(null);
+        setError(null);
       }
-      setAccount(null);
-      setIsConnected(false);
     } catch (error) {
-      console.error('Lỗi ngắt kết nối ví:', error);
-      setError(error.message || 'Không thể ngắt kết nối ví Petra');
+      console.error('Lỗi khi ngắt kết nối ví:', error);
+      setError(error.message);
+    }
+  };
+
+  const signAndSubmitTransaction = async (transaction) => {
+    try {
+      setError(null);
+      const wallet = getAptosWallet();
+      if (!wallet) {
+        throw new Error('Ví Petra không được tìm thấy');
+      }
+      
+      if (!isConnected) {
+        throw new Error('Ví chưa được kết nối');
+      }
+      
+      const pendingTransaction = await wallet.signAndSubmitTransaction(transaction);
+      
+      let aptosClient;
+      switch(network) {
+        case 'Mainnet':
+          aptosClient = new AptosClient('https://fullnode.mainnet.aptoslabs.com/v1');
+          break;
+        case 'Testnet':
+          aptosClient = new AptosClient('https://fullnode.testnet.aptoslabs.com/v1');
+          break;
+        case 'Devnet':
+          aptosClient = new AptosClient('https://fullnode.devnet.aptoslabs.com/v1');
+          break;
+        default:
+          aptosClient = new AptosClient('https://fullnode.testnet.aptoslabs.com/v1');
+      }
+      
+      const txnResult = await aptosClient.waitForTransactionWithResult(pendingTransaction.hash);
+      
+      return {
+        pendingTransaction,
+        txnResult
+      };
+    } catch (error) {
+      console.error('Lỗi khi ký và gửi giao dịch:', error);
+      setError(error.message || 'Lỗi không xác định khi gửi giao dịch');
+      throw error;
     }
   };
 
@@ -159,6 +202,7 @@ export function WalletProvider({ children }) {
     isClient,
     connectWallet,
     disconnectWallet,
+    signAndSubmitTransaction,
     getAptosWallet,
   };
 

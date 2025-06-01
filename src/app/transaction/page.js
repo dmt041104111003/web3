@@ -62,25 +62,34 @@ export default function TransactionPage() {
   }
 
   return (
-    <div className="container mx-auto px-4 pt-24 pb-12 bg-gradient-to-b from-indigo-100 to-white min-h-screen">
-      <div className="max-w-6xl mx-auto">
-        <h1 className="text-3xl font-bold text-center text-indigo-700 mb-8">Gửi Giao Dịch</h1>
-        <div className="text-center text-gray-600 mb-8">
-          Chuyển APT đến địa chỉ khác trên mạng Aptos
+    <div className="min-h-screen flex flex-col">
+      <main className="flex-grow bg-gradient-to-b from-blue-50 to-indigo-50 pt-32 pb-16 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-6xl mx-auto w-full">
+        <h1 className="text-4xl font-extrabold mb-6 text-center bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-indigo-600">Aptos Devnet Demo</h1>
+        <div className="text-center text-gray-700 text-lg mb-10">
+          Chuyển APT đến địa chỉ khác trên mạng Aptos Devnet một cách nhanh chóng và dễ dàng
         </div>
         
         {!isConnected ? (
-          <div className="text-center py-8">
-            <p className="mb-4 text-gray-600">Vui lòng kết nối ví để gửi giao dịch</p>
+          <div className="text-center py-12 bg-white rounded-xl shadow-lg border border-blue-100 hover:shadow-xl transition-shadow duration-300">
+            <div className="mb-6">
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-16 w-16 mx-auto text-indigo-500 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+              </svg>
+            </div>
+            <p className="mb-6 text-gray-700 text-lg">Vui lòng kết nối ví Petra để gửi giao dịch</p>
             <button
               onClick={connectWallet}
-              className="bg-indigo-600 text-white py-2 px-4 rounded hover:bg-indigo-700 transition"
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-3 px-6 rounded-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 font-medium shadow-md hover:shadow-lg flex items-center mx-auto"
             >
+              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+              </svg>
               Kết nối Petra Wallet
             </button>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
             <div>
               <TransactionForm 
                 saveTransactionToHistory={saveTransactionToHistory}
@@ -142,15 +151,18 @@ export default function TransactionPage() {
           </div>
         )}
         
-        <div className="mt-8 text-center">
-          <Link href="/home" className="inline-flex items-center text-indigo-600 hover:text-indigo-800 font-medium transition-colors">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="mt-10 text-center">
+          <Link href="/home" className="inline-flex items-center px-5 py-2.5 bg-white text-indigo-600 font-medium rounded-lg hover:bg-indigo-50 transition-colors shadow-sm border border-indigo-200">
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
             </svg>
             Quay lại Trang chủ
           </Link>
         </div>
-      </div>
+        </div>
+      </main>
+      
+
     </div>
   );
 }

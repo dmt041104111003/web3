@@ -16,9 +16,6 @@ export default function Home() {
   const router = useRouter();
   const [showSplash, setShowSplash] = useState(true);
 
-  // Luôn hiển thị splash screen mỗi khi truy cập vào trang home
-  
-  // Xử lý khi splash screen hoàn thành
   const handleSplashComplete = () => {
     setShowSplash(false);
   };

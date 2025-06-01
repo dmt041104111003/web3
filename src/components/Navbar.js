@@ -79,7 +79,12 @@ export default function Navbar() {
                 Trang chủ
               </button>
               
-
+              <button 
+                onClick={() => navigateTo('/message-board')} 
+                className={`px-4 py-2 rounded-md text-sm font-medium ${pathname === '/message-board' ? 'bg-white text-indigo-700' : 'text-white hover:bg-indigo-600'} transition-colors duration-200`}
+              >
+                Bảng Tin
+              </button>
               
               <button 
                 onClick={() => navigateTo('/transaction')} 
@@ -169,6 +174,13 @@ export default function Navbar() {
             className={`w-full text-left block px-3 py-2 rounded-md text-base font-medium ${pathname === '/home' ? 'bg-indigo-600 text-white' : 'text-indigo-100 hover:bg-indigo-700 hover:text-white'}`}
           >
             Trang chủ
+          </button>
+
+          <button
+            onClick={() => navigateTo('/message-board')}
+            className={`w-full text-left block px-3 py-2 rounded-md text-base font-medium ${pathname === '/message-board' ? 'bg-indigo-600 text-white' : 'text-indigo-100 hover:bg-indigo-700 hover:text-white'}`}
+          >
+            Bảng Tin
           </button>
 
           <button

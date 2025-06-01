@@ -4,12 +4,8 @@ import { AptosClient } from 'aptos';
 import { getMessage, messageExists, postMessage } from '../utils/contract';
 import { CONTRACT_ADDRESS, MODULE_PATH, MODULE_NAME, PUBLISHER_ADDRESS } from '../config/contract';
 
-// Tạo Aptos client dựa trên mạng devnet
 const client = new AptosClient('https://fullnode.devnet.aptoslabs.com/v1');
 
-/**
- * Hook để tương tác với Message Board smart contract
- */
 export function useMessageBoard() {
   const { account, signAndSubmitTransaction, isConnected } = useWallet();
   const [message, setMessage] = useState('');

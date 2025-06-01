@@ -81,11 +81,13 @@ export default function Navbar() {
                 Trang chủ
               </button>
               
+
+              
               <button 
-                onClick={() => navigateTo('/wallet')} 
-                className={`px-4 py-2 rounded-md text-sm font-medium ${pathname === '/wallet' ? 'bg-white text-indigo-700' : 'text-white hover:bg-indigo-600'} transition-colors duration-200`}
+                onClick={() => navigateTo('/transaction')} 
+                className={`px-4 py-2 rounded-md text-sm font-medium ${pathname === '/transaction' ? 'bg-white text-indigo-700' : 'text-white hover:bg-indigo-600'} transition-colors duration-200`}
               >
-                Thông tin ví
+                Gửi giao dịch
               </button>
             </div>
 
@@ -170,11 +172,12 @@ export default function Navbar() {
           >
             Trang chủ
           </button>
+
           <button
-            onClick={() => navigateTo('/wallet')}
-            className={`w-full text-left block px-3 py-2 rounded-md text-base font-medium ${pathname === '/wallet' ? 'bg-indigo-600 text-white' : 'text-indigo-100 hover:bg-indigo-700 hover:text-white'}`}
+            onClick={() => navigateTo('/transaction')}
+            className={`w-full text-left block px-3 py-2 rounded-md text-base font-medium ${pathname === '/transaction' ? 'bg-indigo-600 text-white' : 'text-indigo-100 hover:bg-indigo-700 hover:text-white'}`}
           >
-            Thông tin ví
+            Gửi giao dịch
           </button>
           
           <div className="pt-2">

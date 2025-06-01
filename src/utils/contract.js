@@ -1,11 +1,6 @@
 import { CONTRACT_ADDRESS, MODULE_PATH } from "../config/contract";
 import { Types } from "aptos";
 
-/**
- * Lấy nội dung tin nhắn từ message board
- * @param {AptosClient} client - Client Aptos 
- * @returns {Promise<string>} Nội dung tin nhắn
- */
 export async function getMessage(client) {
   try {
     const message = await client.view({
@@ -21,11 +16,7 @@ export async function getMessage(client) {
   }
 }
 
-/**
- * Kiểm tra xem tin nhắn có tồn tại không
- * @param {AptosClient} client - Client Aptos
- * @returns {Promise<boolean>} Kết quả kiểm tra
- */
+
 export async function messageExists(client) {
   try {
     const exists = await client.view({
@@ -41,13 +32,7 @@ export async function messageExists(client) {
   }
 }
 
-/**
- * Đăng tin nhắn mới lên message board
- * @param {AptosClient} client - Client Aptos
- * @param {string} account - Địa chỉ tài khoản người dùng
- * @param {string} message - Nội dung tin nhắn
- * @returns {Promise<string>} Hash của giao dịch
- */
+
 export async function postMessage(client, account, message) {
   try {
     const payload = {

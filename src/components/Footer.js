@@ -1,20 +1,18 @@
 import React from 'react';
 import Link from 'next/link';
+import AptosLogo from './AptosLogo';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-gradient-to-r from-blue-900 via-indigo-900 to-purple-900 text-white py-12 mt-auto shadow-lg">
+    <footer className="bg-gradient-to-r from-gray-900 via-slate-900 to-gray-800 text-white py-12 mt-auto shadow-lg">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row justify-between items-center mb-10 pb-8 border-b border-indigo-700">
-          <div className="mb-6 md:mb-0">
-            <h2 className="text-2xl font-bold text-white flex items-center">
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mr-2 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM4.332 8.027a6.012 6.012 0 011.912-2.706C6.512 5.73 6.974 6 7.5 6A1.5 1.5 0 019 7.5V8a2 2 0 004 0 2 2 0 011.523-1.943A5.977 5.977 0 0116 10c0 .34-.028.675-.083 1H15a2 2 0 00-2 2v2.197A5.973 5.973 0 0110 16v-2a2 2 0 00-2-2 2 2 0 01-2-2 2 2 0 00-1.668-1.973z" clipRule="evenodd" />
-              </svg>
-              Aptos Demo
-            </h2>
+          <div className="mb-6 md:mb-0 pl-4 md:pl-6">
+            <div className="flex items-center justify-center">
+              <AptosLogo className="scale-125" />
+            </div>
           </div>
           <div className="w-full md:w-auto">
             <div className="flex flex-col sm:flex-row gap-4">
@@ -40,7 +38,6 @@ export default function Footer() {
           </div>
         </div>
         
-        {/* Main footer links */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           <div>
             <h3 className="text-lg font-bold mb-4 text-blue-300 uppercase tracking-wider">Giới thiệu</h3>
@@ -132,7 +129,6 @@ export default function Footer() {
           </div>
         </div>
         
-        {/* Bottom section with copyright */}
         <div className="pt-8 border-t border-indigo-800 flex flex-col md:flex-row justify-between items-center">
           <p className="text-gray-400 text-sm mb-4 md:mb-0">
             &copy; {currentYear} Aptos Demo. Tất cả các quyền được bảo lưu.

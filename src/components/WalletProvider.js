@@ -1,6 +1,6 @@
 'use client';
 
-import { createContext, useContext, useState, useEffect } from 'react';
+import { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react';
 
 const WalletContext = createContext(null);
 
@@ -9,10 +9,14 @@ export function useWallet() {
 }
 
 export function WalletProvider({ children }) {
+  const isMounted = useRef(false);
   const [account, setAccount] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
   const [error, setError] = useState(null);
+  const [network, setNetwork] = useState(null);
+  const [isClient, setIsClient] = useState(false);
+  const pollIntervalRef = useRef(null);
 
   const getAptosWallet = () => {
     if ('aptos' in window) {
@@ -67,23 +71,83 @@ export function WalletProvider({ children }) {
     }
   };
 
+  const checkWalletStatus = useCallback(async () => {
+    if (!isMounted.current) return;
+    
+    try {
+      const wallet = getAptosWallet();
+      if (!wallet) return;
+
+      const isConnected = await wallet.isConnected();
+      if (!isConnected) {
+        if (isMounted.current) {
+          setIsConnected(false);
+          setAccount(null);
+          setNetwork(null);
+        }
+        return;
+      }
+
+      const currentAccount = await wallet.account();
+      if (currentAccount && isMounted.current) {
+        setAccount(currentAccount);
+        setIsConnected(true);
+      }
+
+      const currentNetwork = await wallet.network();
+      if (currentNetwork && isMounted.current) {
+        setNetwork(currentNetwork);
+      }
+    } catch (error) {
+      console.error('Lỗi khi kiểm tra trạng thái ví:', error);
+    }
+  }, []);
+
   useEffect(() => {
-    const checkConnection = async () => {
+    setIsClient(true);
+    isMounted.current = true;
+    
+    checkWalletStatus();
+    
+    pollIntervalRef.current = setInterval(checkWalletStatus, 2000);
+    
+    return () => {
+      isMounted.current = false;
+      if (pollIntervalRef.current) {
+        clearInterval(pollIntervalRef.current);
+      }
+    };
+  }, [checkWalletStatus]);
+
+  useEffect(() => {
+    if (!isMounted.current) return;
+    
+    const setupDisconnectListener = async () => {
       try {
         const wallet = getAptosWallet();
-        if (wallet) {
-          const account = await wallet.account();
-          if (account) {
-            setAccount(account);
-            setIsConnected(true);
+        if (!wallet) return;
+        
+        wallet.onDisconnect(() => {
+          console.log('Ví đã ngắt kết nối');
+          if (isMounted.current) {
+            setIsConnected(false);
+            setAccount(null);
+            setNetwork(null);
           }
-        }
+        });
       } catch (error) {
-        console.error('Lỗi khi kiểm tra kết nối:', error);
+        console.error('Lỗi khi thiết lập sự kiện lắng nghe ngắt kết nối:', error);
       }
     };
 
-    checkConnection();
+    setupDisconnectListener();
+
+    return () => {
+      const wallet = getAptosWallet();
+      if (wallet && wallet.removeAllListeners) {
+        wallet.removeAllListeners();
+      }
+    };
   }, []);
 
   const walletContextValue = {
@@ -91,6 +155,8 @@ export function WalletProvider({ children }) {
     isConnected,
     isConnecting,
     error,
+    network,
+    isClient,
     connectWallet,
     disconnectWallet,
     getAptosWallet,

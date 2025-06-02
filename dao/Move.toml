@@ -3,16 +3,19 @@ name = "dao"
 version = "1.0.0"
 authors = []
 upgrade_policy = "immutable"
+
 [addresses]
 dao_platform = "_"
 aptos_framework = "0x1"
+aptos_token = "0x3"
+
 [dev-addresses]
 dao_platform = "0xcafe"
 
-[dependencies.AptosFramework]
-git = "https://github.com/aptos-labs/aptos-framework.git"
-rev = "devnet"
-subdir = "aptos-framework"
+[dependencies]
+AptosFramework = { git = "https://github.com/aptos-labs/aptos-framework.git", subdir = "aptos-framework", rev = "devnet" }
+AptosToken = { git = "https://github.com/aptos-labs/aptos-framework.git", subdir = "aptos-token", rev = "devnet" }
+AptosStdlib = { git = "https://github.com/aptos-labs/aptos-framework.git", subdir = "aptos-stdlib", rev = "devnet" }
 
 [dev-dependencies]
 AptosFramework = { git = "https://github.com/aptos-labs/aptos-framework.git", subdir = "aptos-framework", rev = "devnet" }

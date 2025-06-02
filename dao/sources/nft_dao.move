@@ -1234,7 +1234,11 @@ module dao_platform::nft_dao {
             vector<String>[string::utf8(b"artist2"), string::utf8(b"artist3")],
             vector<u64>[0, 0],
         );
-        admin_veto_proposal(creator, 1, res_acc, string::utf8(b""));
+        
+        // Admin veto the proposal
+        admin_veto_proposal(creator, 1, res_acc, string::utf8(b"Admin veto reason"));
+        
+        // Now check if the proposal was vetoed
         assert!(get_proposal_resolution(1, res_acc) == PROPOSAL_VETOED_BY_ADMIN, 1);
     }
 
